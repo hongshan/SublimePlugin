@@ -59,7 +59,8 @@ class PythonPEP8Autoformat(object):
 
   def get_options(self):
     cmd_args = list()
-    cmd_args.extend(['--aggressive'] * self.settings.get('aggressive', 0))
+    cmd_args.extend(['--aggressive'] *
+                    self.settings.get('aggressive', 0))
     if self.settings.get('list-fixes', False):
       cmd_args.append('--list-fixes')
     if self.settings.get('ignore', False):
@@ -90,8 +91,10 @@ class Pep8AutoformatCommand(sublime_plugin.TextCommand):
     replace_region = self.view.line(
         sublime.Region(0, self.view.size()))
     source = self.view.substr(replace_region)
-    fixed = autopep8.fix_code(source, options=PPA.get_options())
-    is_dirty, err = MergeUtils.merge_code(self.view, edit, source, fixed)
+    ppa = PythonPEP8Autoformat()
+    fixed = autopep8.fix_code(source, options=ppa.get_options())
+    is_dirty, err = MergeUtils.merge_code(
+        self.view, edit, source, fixed)
     if err:
       sublime.error_message(
           "%s: Merge failure: '%s'" % (PLUGIN_NAME, err))
@@ -106,7 +109,8 @@ class Pep8AutoformatBackground(sublime_plugin.EventListener):
       return
 
     # do autoformat on file save if allowed in settings
-    if PPA.settings.get('autoformat_on_save', False):
+    ppa = PythonPEP8Autoformat()
+    if ppa.settings.get('autoformat_on_save', False):
       view.run_command('pep8_autoformat')
 
 
